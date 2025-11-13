@@ -3,15 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSITE COUNCIL PAGE</title>
-    <Style>
-  
-    </Style>
+    <title>PSTIE PAGE</title>
+    <style>
+        body {
+            display: flex;
+            background-image: url(Images/Background.png);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: background-position 0.5s ease;
+            font-family: Arial, sans-serif;
+            color: black;
+            user-select: none;
+            margin: 0;
+        }body.move-left {
+            background-position: left;
+        }
+
+        .icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+            transition: transform 0.5s ease;
+        }.icons.move-left {
+            transform: translateX(-350px);
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap; 
+        }
+
+        .panel {
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 135px;
+            height: 135px;
+            display: flex;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            overflow: hidden;
+        }.panel:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+        }.panel img {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .icons {
+                gap: 20px;
+                padding: 20px;
+            }
+            .row {
+                gap: 15px;
+            }
+            .panel {
+                width: 90px;
+                height: 90px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .icons {
+                gap: 15px;
+                padding: 10px;
+            }
+            .row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .panel {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>HELLO WORLD!</h1>
+    <div class="icons" id="icons"> 
+        <div class="row">
+            <div class="panel"><img src="Images/Icon.png" alt="Icon1"></div>
+        </div>
+        <div class="row">
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 2"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 2"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 2"></div>
+        </div>
+        <div class="row">
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 3"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 3"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 3"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 3"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon 3"></div>
+        </div>
+        <div class="row">
+            <div class="panel"><img src="Images/Icon.png" alt="Icon4"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon4"></div>
+            <div class="panel"><img src="Images/Icon.png" alt="Icon4"></div>
+        </div>
+    </div>
 </body>
-<script>
-
-</script>
 </html>
