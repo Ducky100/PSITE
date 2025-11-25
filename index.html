@@ -328,11 +328,12 @@
 
   <script>
     const toggleBtn = document.getElementById("toggleBtn");
-    const sidePanel = document.getElementById("sidePanel");
-    const icons = document.getElementById("icons");
-    const bgLogo = document.getElementById("bgLogo");
-    const message = document.getElementById("message");
+  const sidePanel = document.getElementById("sidePanel");
+  const icons = document.getElementById("icons");
+  const bgLogo = document.getElementById("bgLogo");
+  const message = document.getElementById("message");
 
+  if (toggleBtn) {
     toggleBtn.addEventListener("click", () => {
       sidePanel.classList.toggle("open");
       icons.classList.toggle("move-left");
@@ -341,81 +342,155 @@
       toggleBtn.classList.toggle("move-left");
       toggleBtn.classList.toggle("opened");
     });
+  }
 
-    //Register User
-    function registerUser() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
+  
+  if (!localStorage.getItem("users")) {
+    const initialUsers = {
+      "Gabriel": { password: "abcd", role: "admin" },
+      "Zedrick": { password: "abcd", role: "admin" },
+      "Rolle": { password: "abcd", role: "user" },
+      "Nat": { password: "abcd", role: "admin" }
+    };
+    localStorage.setItem("users", JSON.stringify(initialUsers));
+  }
 
-      if (!username || !password) {
-        message.style.color = "red";
-        message.innerText = "Please fill in both fields.";
-        return;
-      }
+  
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
 
-      const users = JSON.parse(localStorage.getItem("users")) || {};
-      if (users[username]) {
-        message.style.color = "red";
-        message.innerText = "Username already exists.";
+  
+  window.registerUser = function() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!username || !password) {
+      message.style.color = "red";
+      message.innerText = "Please fill in both fields.";
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if (users[username]) {
+      message.style.color = "red";
+      message.innerText = "Username already exists.";
+      return;
+    }
+
+    users[username] = {
+      password: password,
+      role: "user"
+    };
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    message.style.color = "green";
+    message.innerText = "Account created! You can now sign in.";
+
+    usernameInput.value = "";
+    passwordInput.value = "";
+  };
+
+  
+  window.manualLogin = function() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if (!username || !password) {
+      message.style.color = "red";
+      message.innerText = "Please fill in both fields.";
+      return;
+    }
+
+    if (!users[username]) {
+      message.style.color = "red";
+      message.innerText = "Username not found.";
+      return;
+    }
+
+    if (users[username].password !== password) {
+      message.style.color = "red";
+      message.innerText = "Incorrect password.";
+      return;
+    }
+
+    message.style.color = "green";
+    message.innerText = "Login successful! Redirecting...";
+
+  
+    localStorage.setItem("currentUser", JSON.stringify({
+      username: username,
+      role: users[username].role
+    }));
+
+    setTimeout(() => {
+      if (users[username].role === "admin") {
+        window.location.href = "AdminPages/AdminHome.html";
       } else {
-        users[username] = password;
-        localStorage.setItem("users", JSON.stringify(users));
-        message.style.color = "green";
-        message.innerText = "Account created! You can now sign in.";
+        window.location.href = "Pages/Homepage.html";
       }
+    }, 1000);
+  };
+
+  
+  const resetModal = document.getElementById("resetModal");
+  const resetUsernameInput = document.getElementById("resetUsername");
+  const newPasswordInput = document.getElementById("newPassword");
+  const resetMessage = document.getElementById("resetMessage");
+
+  window.openResetModal = function() {
+    resetModal.style.display = "flex";
+  };
+
+  window.closeResetModal = function() {
+    resetModal.style.display = "none";
+    resetMessage.innerText = "";
+    resetUsernameInput.value = "";
+    newPasswordInput.value = "";
+  };
+
+  window.resetPassword = function() {
+    const username = resetUsernameInput.value.trim();
+    const newPassword = newPasswordInput.value.trim();
+
+    if (!username || !newPassword) {
+      resetMessage.style.color = "red";
+      resetMessage.innerText = "Please fill in all fields.";
+      return;
     }
 
-    // Login
-    function manualLogin() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const users = JSON.parse(localStorage.getItem("users")) || {};
+    const users = JSON.parse(localStorage.getItem("users")) || {};
 
-      if (users[username] && users[username] === password) {
-        message.style.color = "green";
-        message.innerText = "Login successful! Redirecting...";
-        localStorage.setItem("currentUser", username);
-        setTimeout(() => {
-          window.location.href = "Pages/Homepage.html";
-        }, 1000);
-      } else {
-        message.style.color = "red";
-        message.innerText = "Invalid username or password.";
-      }
+    if (!users[username]) {
+      resetMessage.style.color = "red";
+      resetMessage.innerText = "Username not found.";
+      return;
     }
 
-    // Forgot Password
-    function openResetModal() {
-      document.getElementById("resetModal").style.display = "flex";
-    }
-    function closeResetModal() {
-      document.getElementById("resetModal").style.display = "none";
-      document.getElementById("resetMessage").innerText = "";
-    }
+    users[username].password = newPassword;
+    localStorage.setItem("users", JSON.stringify(users));
 
-    function resetPassword() {
-      const username = document.getElementById("resetUsername").value.trim();
-      const newPassword = document.getElementById("newPassword").value.trim();
-      const resetMessage = document.getElementById("resetMessage");
+    resetMessage.style.color = "green";
+    resetMessage.innerText = "Password reset successfully!";
 
-      if (!username || !newPassword) {
-        resetMessage.style.color = "red";
-        resetMessage.innerText = "Please fill in both fields.";
-        return;
-      }
+    setTimeout(() => {
+      closeResetModal();
+    }, 1200);
+  };
 
-      const users = JSON.parse(localStorage.getItem("users")) || {};
-      if (users[username]) {
-        users[username] = newPassword;
-        localStorage.setItem("users", JSON.stringify(users));
-        resetMessage.style.color = "green";
-        resetMessage.innerText = "Password reset successfully!";
-        setTimeout(() => closeResetModal(), 1000);
-      } else {
-        resetMessage.style.color = "red";
-        resetMessage.innerText = "Username not found.";
-      }
+  
+  window.checkLogin = function(redirect = true) {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser && redirect) {
+      window.location.href = "../index.html";
     }
+    return currentUser;
+  };
+
+});
+
   </script>
 </body>
 </html>
